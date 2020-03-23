@@ -1,0 +1,13 @@
+{$DOMAIN}:443 *.{$DOMAIN}:443 {
+  tls /etc/ssl/fullchain.pem /etc/ssl/privkey.pem
+  proxy / localhost:3000 {
+    transparent
+  }
+  log stdout
+  errors stdout
+  on startup node -r esm ./bin/server --host localhost --port 3000 --domain {$DOMAIN}
+}
+
+{$DOMAIN}:80 *.{$DOMAIN}:80 {
+  redir https://{host}{uri}
+}
